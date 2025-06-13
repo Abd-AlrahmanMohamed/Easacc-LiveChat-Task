@@ -28,3 +28,7 @@ A robust and scalable **real-time live chat web application** built using **.NET
 - Chat popup & responsive layout
 - File upload (image, document)
 - Bilingual support (English/Arabic toggle)
+
+### Clone the Repository
+```bash
+https://github.com/Abd-AlrahmanMohamed/Easacc-LiveChat-Task.git
