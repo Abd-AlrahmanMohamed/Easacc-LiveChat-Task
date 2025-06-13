@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\03b5ec1d-9516-4755-902f-88c9683f6f56.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\03b5ec1d-9516-4755-902f-88c9683f6f56.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\0ca62321-8152-4b7e-89f6-2990f53c9471.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\0ca62321-8152-4b7e-89f6-2990f53c9471.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\3e6e4585-75d7-44f0-a04e-da2369f7dbf5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\3e6e4585-75d7-44f0-a04e-da2369f7dbf5.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\ccecf722-6626-4c74-bab0-05284fd04ce2.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\ccecf722-6626-4c74-bab0-05284fd04ce2.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ChatApi.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ChatApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.ChatApi.props",
+      "PackagePath": "build\\ChatApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.ChatApi.props",
+      "PackagePath": "buildMultiTargeting\\ChatApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.ChatApi.props",
+      "PackagePath": "buildTransitive\\ChatApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
