@@ -110,7 +110,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ReceivedId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("SenderId", "ReceivedId")
+                        .IsUnique()
+                        .HasFilter("[SenderId] IS NOT NULL AND [ReceivedId] IS NOT NULL");
 
                     b.ToTable("Chats");
                 });

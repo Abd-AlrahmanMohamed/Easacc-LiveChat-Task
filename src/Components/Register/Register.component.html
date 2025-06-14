@@ -1,0 +1,74 @@
+<section class="vh-100" style="background-color: #eee;">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <!-- Form Column -->
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+
+                <form class="mx-1 mx-md-4" [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
+
+                  <!-- Full Name -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="fullname">Full Name</label>
+                    <input type="text" id="fullname" class="form-control" formControlName="fullname" />
+                    <small *ngIf=" fullname()?.hasError('pattern') && fullname()?.hasError('required') && fullname()?.untouched" class="text-danger">
+                      Full Name must be at least 20 letters.
+                    </small>
+                  </div>
+
+                  <!-- Username -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-control" formControlName="username" />
+                    <small *ngIf="username()?.hasError('pattern') && username()?.hasError('required') && username()?.touched" class="text-danger">
+                      Username must be at least 9 characters (letters and numbers).
+                    </small>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-control" formControlName="email" />
+                    <small *ngIf="email()?.hasError('pattern') && email()?.touched" class="text-danger">
+                      Invalid email format.
+                    </small>
+                  </div>
+
+                  <!-- Password -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control" formControlName="password" />
+                    <small *ngIf="password()?.hasError('pattern') && password()?.touched" class="text-danger">
+                      Password must be at least 9 characters numbers with uppercase, lowercasr and alphanumeric character.
+                    </small>
+                  </div>
+
+                  <!-- Contact -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="contact">Contact</label>
+                    <input type="text" id="contact" class="form-control" formControlName="contact" />
+                    <small *ngIf="contact()?.hasError('pattern') && contact()?.touched" class="text-danger">
+                      Contact must be a valid Bangladeshi phone number (starts with 01 and 9 digits).
+                    </small>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="d-flex justify-content-center mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg" >Register</button>
+                  </div>
+                </form>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

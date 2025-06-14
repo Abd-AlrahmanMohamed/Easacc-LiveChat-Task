@@ -1,20 +1,32 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\03b5ec1d-9516-4755-902f-88c9683f6f56.jpg",
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\03b5ec1d-9516-4755-902f-88c9683f6f56.jpg",
       "PackagePath": "staticwebassets\\uploads\\image\\03b5ec1d-9516-4755-902f-88c9683f6f56.jpg"
     },
     {
-      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\0ca62321-8152-4b7e-89f6-2990f53c9471.jpg",
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\0ca62321-8152-4b7e-89f6-2990f53c9471.jpg",
       "PackagePath": "staticwebassets\\uploads\\image\\0ca62321-8152-4b7e-89f6-2990f53c9471.jpg"
     },
     {
-      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\3e6e4585-75d7-44f0-a04e-da2369f7dbf5.jpg",
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\3e6e4585-75d7-44f0-a04e-da2369f7dbf5.jpg",
       "PackagePath": "staticwebassets\\uploads\\image\\3e6e4585-75d7-44f0-a04e-da2369f7dbf5.jpg"
     },
     {
-      "Id": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\ChatApi\\wwwroot\\uploads\\image\\ccecf722-6626-4c74-bab0-05284fd04ce2.jpg",
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\5eb0b1bc-8f4b-4cd1-b0ac-89711076980c.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\5eb0b1bc-8f4b-4cd1-b0ac-89711076980c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\6c8003ef-201f-41dd-9995-cb770fea306c.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\6c8003ef-201f-41dd-9995-cb770fea306c.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\ccecf722-6626-4c74-bab0-05284fd04ce2.jpg",
       "PackagePath": "staticwebassets\\uploads\\image\\ccecf722-6626-4c74-bab0-05284fd04ce2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\ChatApi\\wwwroot\\uploads\\image\\db483499-2166-42e5-abf6-b79e264d3323.jpg",
+      "PackagePath": "staticwebassets\\uploads\\image\\db483499-2166-42e5-abf6-b79e264d3323.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ChatApi.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

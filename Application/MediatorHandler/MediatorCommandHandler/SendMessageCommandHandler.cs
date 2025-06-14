@@ -89,6 +89,7 @@ namespace Application.MediatorHandler.MediatorCommandHandler
                 await _unitOfWork.Repository<Chat>().AddAsync(chat);
             }
 
+
             var message = new Message
             {
                 Id = Guid.NewGuid(),
@@ -104,12 +105,12 @@ namespace Application.MediatorHandler.MediatorCommandHandler
             await _unitOfWork.Repository<Message>().AddAsync(message);
 
 
-            if (chat.Messages == null)
-                {
-                chat.Messages = new List<Message>();
-                chat.Messages.Add(message);
+            //if (chat.Messages == null)
+            //    {
+            //    chat.Messages = new List<Message>();
+            //    chat.Messages.Add(message);
 
-                }
+            //    }
                 chat.LastActive = chat.Messages
                 .OrderByDescending(m => m.SentAt)
                 .Select(m => m.SentAt)

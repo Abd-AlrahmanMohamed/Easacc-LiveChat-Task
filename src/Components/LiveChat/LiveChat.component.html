@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 py-0 ">
+  <a class="navbar-brand d-flex align-items-center" href="#">
+    <span style="font-size: 1.5rem; margin-right: 8px;">💬</span>
+    Chat App
+  </a>
+  <div class="ms-auto">
+    <button class="btn btn-outline-light" (click)="signOut()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="container-fluid vh-100 d-flex mt-1 ">
+  <!-- Sidebar -->
+  <div class="col-md-3 bg-light border-end p-3 overflow-auto">
+    <h5 class="mb-3">Users</h5>
+    <ul class="list-group">
+      <li *ngFor="let user of allUsers"
+          class="list-group-item d-flex justify-content-between align-items-center"
+          (click)="selectUser(user.id)">
+        <span>{{ user.fullName }}</span>
+        <span class="badge bg-success" *ngIf="isUserOnline(user.fullName)">●</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="col-md-9 d-flex flex-column">
+    <div *ngIf="selectedUserId; else selectPrompt" class="d-flex flex-column h-100 ">
+      <div class="bg-primary text-white p-1 d-flex justify-content-between align-items-center">
+        <span>Chat with {{ getUserName(selectedUserId) }}</span>
+        <button class="btn btn-sm btn-light" (click)="hideChat()">×</button>
+      </div>
+
+      <!--  Chat message area (replaced with improved version) -->
+  <!-- Message List -->
+<div class="chat-body p-2 bg-white border flex-grow-1 overflow-auto">
+  <div *ngFor="let msg of allMessages" class="mb-3">
+
+    <!-- Text message -->
+    <div *ngIf="msg.type === 0">
+      <h6>{{ msg.content }}</h6>
+    </div>
+
+    <!-- Image message -->
+    <div *ngIf="msg.type === 1">
+      <img [src]="msg.fileUrl" alt="Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
+      <p *ngIf="msg.content">{{ msg.content }}</p>
+    </div>
+
+    <!-- Other file types (PDF, doc, audio) -->
+    <div *ngIf="msg.type > 1">
+      <a [href]="msg.fileUrl" target="_blank">📎 Open Attachment</a>
+      <p *ngIf="msg.content">{{ msg.content }}</p>
+    </div>
+
+    <p class="text-muted small">{{ msg.sentAt }}</p>
+  </div>
+</div>
+
+<!-- Image preview before sending -->
+<div *ngIf="previewUrl" class="p-2">
+  <p class="text-muted small">Preview:</p>
+  <img [src]="previewUrl" class="img-thumbnail" style="max-width: 200px;">
+</div>
+
+<!-- Message input -->
+<div class="border-top p-2 bg-light d-flex align-items-center">
+  <input type="text" class="form-control me-2" placeholder="Type message..."
+         [(ngModel)]="message" (keyup.enter)="sendMessage()" />
+
+  <input type="file" hidden #fileInput (change)="onFileSelected($event)" />
+  <button class="btn btn-outline-secondary me-2" (click)="fileInput.click()">📎</button>
+  <button class="btn btn-outline-secondary me-2" (click)="sendMessage()">➤</button>
+</div>
+
+    </div>
+
+    <!-- Chat prompt when no user selected -->
+    <ng-template #selectPrompt>
+      <div class="d-flex justify-content-center align-items-center h-100 bg-white">
+        <p class="text-muted">Select a user to start chatting</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+

@@ -6,6 +6,7 @@ using Domain.Models;
 using Infrastructure.Interfaces;
 using Application.MediatorHandler.MediatorCommandHandler;
 using Application.MediatorHandler.MediatorQuery;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.SignalR
 {
@@ -39,13 +40,19 @@ namespace Infrastructure.SignalR
         {
             try
             {
+
+                if (string.IsNullOrWhiteSpace(command.Content) && command.FileUrl != null)
+                {
+                    var fileUrl = await SaveFileAsync(command.FileUrl); // Save and get URL
+                    command = command with { Content = fileUrl };       // Immutable update
+                }
                 await _mediator.Send(command);
 
                 await Clients.User(command.ReceiverId.ToString())
                              .SendAsync("ReceiveMessage", new
                              {
                                  senderId = command.SenderId,
-                                 content = command.Content,
+                                 content = !string.IsNullOrWhiteSpace(command.Content) ? command.Content : await SaveFileAsync(command.FileUrl),
                                  type = command.Type,
                                  fileUrl = command.FileUrl, // now it's just a string (URL)
                                  sentAt = DateTime.UtcNow
@@ -63,7 +70,7 @@ namespace Infrastructure.SignalR
             {
                 var messages = await _mediator.Send(new GetAllMessagesForSender(senderId, receiverId));
 
-                await Clients.User(senderId).SendAsync("ReceiveMessagesHistory", messages);
+                await Clients.Caller.SendAsync("ReceiveMessagesHistory", messages);
             }
             catch (Exception ex)
             {
@@ -72,6 +79,17 @@ namespace Infrastructure.SignalR
         }
 
 
+        /*
+         var chatId = GenerateChatId(senderId, receiverId);
+
+    var messages = _context.Messages
+        .Where(m => m.ChatId == chatId)
+        .OrderBy(m => m.Timestamp)
+        .ToList();
+
+    await Clients.Caller.SendAsync("ReceiveMessagesHistory", messages);
+         *
+         */
 
         public async Task Typing(string chatId, string userId)
         {
@@ -149,5 +167,28 @@ namespace Infrastructure.SignalR
         {
             await _mediator.Send(command);
         }
+
+        public async Task<string> SaveFileAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Return relative or absolute URL as needed
+            return $"/uploads/{uniqueFileName}";
+        }
+
     }
 }
+
+

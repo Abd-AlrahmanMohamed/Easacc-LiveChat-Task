@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jHHzV+g3F9I=",
+  "dgSpecHash": "Qt0YSXR9exs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator\\source\\repos\\Chat-Task\\Infrastructure\\Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\Administrator\\source\\Angular\\LiveChat\\Easacc-LiveChat-Task\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
