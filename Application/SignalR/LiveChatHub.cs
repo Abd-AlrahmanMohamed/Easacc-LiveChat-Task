@@ -1,4 +1,4 @@
-﻿using Application.MediatorHandler.MediatorCommend;
+using Application.MediatorHandler.MediatorCommend;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
@@ -41,20 +41,15 @@ namespace Infrastructure.SignalR
             try
             {
 
-                if (string.IsNullOrWhiteSpace(command.Content) && command.FileUrl != null)
-                {
-                    var fileUrl = await SaveFileAsync(command.FileUrl); // Save and get URL
-                    command = command with { Content = fileUrl };       // Immutable update
-                }
                 await _mediator.Send(command);
 
                 await Clients.User(command.ReceiverId.ToString())
                              .SendAsync("ReceiveMessage", new
                              {
                                  senderId = command.SenderId,
-                                 content = !string.IsNullOrWhiteSpace(command.Content) ? command.Content : await SaveFileAsync(command.FileUrl),
+                                 content = command.Content,
                                  type = command.Type,
-                                 fileUrl = command.FileUrl, // now it's just a string (URL)
+                                 fileUrl = command.FileUrl,
                                  sentAt = DateTime.UtcNow
                              });
             }
@@ -168,27 +163,27 @@ namespace Infrastructure.SignalR
             await _mediator.Send(command);
         }
 
-        public async Task<string> SaveFileAsync(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return null;
+    //public async Task<string> SaveFileAsync(IFormFile file)
+    //{
+    //  if (file == null || file.Length == 0)
+    //    return null;
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+    //  var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "image");
+    //  Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
 
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+    //  var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+    //  var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+    //  using (var stream = new FileStream(filePath, FileMode.Create))
+    //  {
+    //    await file.CopyToAsync(stream);
+    //  }
 
-            // Return relative or absolute URL as needed
-            return $"/uploads/{uniqueFileName}";
-        }
+    //  return $"https://localhost:7067/uploads/image/{uniqueFileName}";
+    //}
 
-    }
+
+  }
 }
 
 

@@ -1,4 +1,5 @@
-﻿using Application.MediatorHandler.MediatorCommend;
+using Application.Extensions;
+using Application.MediatorHandler.MediatorCommend;
 using Domain.Models;
 using Infrastructure.Interfaces;
 using MediatR;
@@ -25,21 +26,8 @@ namespace Application.MediatorHandler.MediatorCommandHandler
             {
                 if (request.FileUrl != null && request.FileUrl.Length > 0)
                 {
-                    var typeFolder = request.Type.ToString().ToLower();
-                    var uploadsFolder = Path.Combine("wwwroot", "uploads", typeFolder);
+                  fileUrl = await ImageHandler.ImageConverterAsync(request.FileUrl);
 
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
-
-                    var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(request.FileUrl.FileName)}";
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await request.FileUrl.CopyToAsync(stream);
-                    }
-
-                    fileUrl = $"/uploads/{typeFolder}/{uniqueFileName}";
                 }
                 else
                 {
@@ -49,15 +37,7 @@ namespace Application.MediatorHandler.MediatorCommandHandler
             
 
 
-            //var chat = await _unitOfWork.Repository<Chat>().FindAsync(c =>
-            //    c.Messages.Any(m => m.Content == request.Content && m.Type == request.Type));
-            //string user1 = request.SenderId.CompareTo(request.ReceiverId) < 0 ? request.SenderId : request.ReceiverId;
-            //string user2 = request.SenderId.CompareTo(request.ReceiverId) < 0 ? request.ReceiverId : request.SenderId;
-            //string user1 = request.SenderId.CompareTo(request.ReceiverId) < 0 ? request.SenderId : request.ReceiverId;
-            //string user2 = request.SenderId.CompareTo(request.ReceiverId) < 0 ? request.ReceiverId : request.SenderId;
-
-            //var chat = await _unitOfWork.Repository<Chat>().FindAsync(c =>
-            //    (c.SenderId == request.SenderId && c.ReceivedId == request.ReceiverId));
+           
 
             var senderExists = await _unitOfWork.Repository<Chat>()
                  .FindAsync(u => u.SenderId == request.SenderId);
@@ -65,8 +45,7 @@ namespace Application.MediatorHandler.MediatorCommandHandler
             var receiverExists = await _unitOfWork.Repository<Chat>()
                 .FindAsync(u => u.ReceivedId == request.ReceiverId);
 
-            //if (senderExists && receiverExists) { 
-            //}
+            
 
                 var chat = await _unitOfWork.Repository<Chat>()
                 .FindWithIncludeAsync(c =>
@@ -75,7 +54,7 @@ namespace Application.MediatorHandler.MediatorCommandHandler
                 (m.SenderId == request.ReceiverId && m.ReceivedId == request.SenderId)));
 
 
-            if (chat.SenderId != request.SenderId && chat.ReceivedId != request.ReceiverId)
+            if (chat == null || chat.SenderId != request.SenderId && chat.ReceivedId != request.ReceiverId)
             {
                 chat = new Chat
                 {
@@ -105,17 +84,25 @@ namespace Application.MediatorHandler.MediatorCommandHandler
             await _unitOfWork.Repository<Message>().AddAsync(message);
 
 
-            //if (chat.Messages == null)
-            //    {
-            //    chat.Messages = new List<Message>();
-            //    chat.Messages.Add(message);
+      //if (chat.Messages == null)
+      //    {
+      //    chat.Messages = new List<Message>();
+      //    chat.Messages.Add(message);
 
-            //    }
-                chat.LastActive = chat.Messages
-                .OrderByDescending(m => m.SentAt)
-                .Select(m => m.SentAt)
-                .FirstOrDefault();
-            await _unitOfWork.Complete();
+      //    }
+      if (chat.Messages != null && chat.Messages.Any())
+      {
+        chat.LastActive = chat.Messages
+            .OrderByDescending(m => m.SentAt)
+            .Select(m => m.SentAt)
+            .FirstOrDefault();
+      }
+      else
+      {
+        chat.LastActive = DateTime.UtcNow;
+      }
+
+      await _unitOfWork.Complete();
 
 
             return Unit.Value;

@@ -25,7 +25,7 @@ export class LiveChatComponent implements OnInit {
   chatId: string = '';
   content: string = '';
   type: number = 0;
-  fileUrl?: File | null = null;
+  fileUrl?: string | null = null;
   message: string = '';
   allMessages: IMessage[] = [];
   messages: IMessage[] = [];
@@ -33,7 +33,6 @@ export class LiveChatComponent implements OnInit {
   onlineUsers: string[] = [];
   selectedUserId: string | null = null;
   previewUrl: string | null = null;
-
 
   constructor(private http: HttpClient) {}
 
@@ -59,13 +58,6 @@ export class LiveChatComponent implements OnInit {
       });
   }
   getAllMessageInChat(): void {
-    // if (!this.userId || !this.receivedId) {
-    //   console.warn('Sender or receiver ID missing');
-    //   return;
-    // }
-
-    // const url = `https://localhost:7067/api/Message/get-all?SenderId=${this.userId}&ReceiverId=${this.receivedId}`;
-
     this.http
       .get<IMessage[]>(
         `https://localhost:7067/api/Message/get-all?SenderId=${this.userId}&ReceiverId=${this.selectedUserId}`
@@ -80,6 +72,22 @@ export class LiveChatComponent implements OnInit {
         },
       });
   }
+
+  // sendNewMessage(): void {
+
+  //   this.http
+  //     .get<IMessage[]>(
+  //       `https://localhost:7067/api/Message/send, `)
+  //     .subscribe({
+  //       next: (messagesChat) => {
+  //         this.allMessages = messagesChat;
+  //         console.log('Messages:', this.allMessages); // Check here if messages loaded
+  //       },
+  //       error: (err) => {
+  //         console.error('Failed to load messages:', err);
+  //       },
+  //     });
+  // }
 
   getUserName(userId: string): string {
     const user = this.allUsers.find((u) => u.id === userId);
@@ -136,75 +144,85 @@ export class LiveChatComponent implements OnInit {
     return [user1, user2].sort().join('-');
   }
 
- sendMessage(): void {
-  if ((!this.message && !this.fileUrl) || !this.selectedUserId) return;
+  sendMessage(): void {
+    if ((!this.message?.trim() && !this.fileUrl) || !this.selectedUserId)
+      return;
 
-  const isFile = !!this.fileUrl;
-  let type = 0;
+   let type = 0;
+if (this.fileUrl) {
+  const fileType = this.fileUrl;
 
-  if (isFile) {
-    const fileType = this.fileUrl!.type;
-    if (fileType.startsWith('image/')) type = 1;
-    else if (fileType === 'application/pdf' || fileType.includes('document')) type = 2;
-    else if (fileType.startsWith('audio/')) type = 3;
+  if (fileType.startsWith('data:image/')) {
+    type = 1; 
+  } else if (
+    fileType.startsWith('data:application/pdf') ||
+    fileType.startsWith('data:application/msword') ||
+    fileType.includes('document')
+  ) {
+    type = 2;
+  } else if (fileType.startsWith('data:audio/')) {
+    type = 3;
+  }
+}
+
+
+    const formData = new FormData();
+    formData.append('SenderId', this.userId);
+    formData.append('ReceiverId', this.selectedUserId);
+    formData.append('Content', this.message);
+    formData.append('Type', type.toString());
+
+    if (this.fileUrl) {
+      formData.append('FileUrl', this.fileUrl);
+    }
+
+    // Send message via HTTP
+    const res = this.http
+      .post<IMessage>('https://localhost:7067/api/Message/send', formData)
+      .subscribe({
+        next: (sentMessage) => {
+          console.log('Message sent:', sentMessage);
+          this.messages.push(sentMessage); // Optional: append immediately
+         this.getAllMessageInChat()
+          // Real-time notification via SignalR
+          this.hubConnection
+            .invoke(
+              'SendMessage',
+              (sentMessage)
+            )
+            // .then(() => this.getAllMessageInChat())
+            .catch((err) => console.error('SendMessage error:', err));
+          console.log(res);
+          console.log('Message sent:', sentMessage);
+
+          // (Optional) refresh messages if needed
+          this.hubConnection
+            .invoke('GetMessages', this.userId, this.selectedUserId)
+            .catch((err) => console.error('Failed to fetch messages:', err));
+        },
+        error: (err) => {
+          console.error('HTTP message send failed:', err);
+        },
+      });
   }
 
-  const sendPayload = (base64File: string | null = null) => {
-    const payload = {
-      SenderId: this.userId,
-      ReceiverId: this.selectedUserId,
-      ChatId: this.chatId,
-      Content: this.message,
-      Type: type,
-      FileUrl: this.fileUrl?.name,
+ onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+      this.fileUrl = this.previewUrl;
     };
-    console.log(payload)
-    console.log('sendPayload', this.fileUrl);
-    this.message = '';
+    reader.readAsDataURL(file);
+  } else {
     this.fileUrl = null;
     this.previewUrl = null;
-
-    this.hubConnection
-      .invoke('SendMessage', payload)
-      .then(() => this.getAllMessageInChat())
-      .catch((err) => console.error('SendMessage error:', err));
-
-    // this.message = '';
-    // this.fileUrl = null;
-    // this.previewUrl = null;
-
-    this.hubConnection
-      .invoke('GetMessages', this.userId, this.selectedUserId)
-      .catch((err) => console.error('Failed to fetch messages:', err));
-  };
-
-  if (isFile) {
-    const reader = new FileReader();
-    reader.onload = () => sendPayload(reader.result as string);
-    reader.readAsDataURL(this.fileUrl!);
-  } else {
-    sendPayload(null);
   }
 }
 
-
-onFileSelected(event: Event): void {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    this.fileUrl = target.files[0];
-
-    // Generate image preview if it's an image
-    if (this.fileUrl.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result as string;
-      };
-      reader.readAsDataURL(this.fileUrl);
-    } else {
-      this.previewUrl = null;
-    }
-  }
-}
 
   hideChat(): void {
     this.selectedUserId = null;
@@ -215,8 +233,8 @@ onFileSelected(event: Event): void {
   isUserOnline(userId: string): boolean {
     return this.onlineUsers.includes(userId);
   }
-   signOut() {
-  localStorage.removeItem('id');
-  localStorage.removeItem('name');
-}
+  signOut() {
+    localStorage.removeItem('id');
+    localStorage.removeItem('name');
+  }
 }
