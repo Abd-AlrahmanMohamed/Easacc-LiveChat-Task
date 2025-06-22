@@ -3,6 +3,8 @@ using Application.MediatorHandler.MediatorCommend;
 using Domain.Models;
 using Infrastructure.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.MediatorHandler.MediatorCommandHandler
@@ -10,13 +12,16 @@ namespace Application.MediatorHandler.MediatorCommandHandler
     public class SendMessageHandler : IRequestHandler<SendMessageCommand>
     {
         private readonly IUnityOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _environment;
 
-        public SendMessageHandler(IUnityOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+    public SendMessageHandler(IUnityOfWork unitOfWork, IWebHostEnvironment environment)
+    {
+      _unitOfWork = unitOfWork;
+      _environment = environment;
+    }
 
-        public async Task<Unit> Handle(SendMessageCommand request, CancellationToken cancellationToken)
+
+    public async Task<Unit> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
             string fileUrl = null;
 
@@ -24,11 +29,23 @@ namespace Application.MediatorHandler.MediatorCommandHandler
                 request.Type == MessageType.Document ||
                 request.Type == MessageType.Audio)
             {
-                if (request.FileUrl != null && request.FileUrl.Length > 0)
-                {
-                  fileUrl = await ImageHandler.ImageConverterAsync(request.FileUrl);
+               if (request.FileUrl != null)
+        {
+            string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
 
-                }
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.FileUrl.FileName);
+            string fullPath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                await request.FileUrl.CopyToAsync(fileStream, cancellationToken);
+            }
+
+            fileUrl = $"/uploads/{uniqueFileName}"; // relative path to be served
+        }
                 else
                 {
                     fileUrl = null;

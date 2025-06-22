@@ -49,7 +49,7 @@
 
     <!-- Image message -->
     <div *ngIf="msg.type === 1 && msg.fileUrl">
-      <img [src]="msg.fileUrl" alt="Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
+      <img [src]="getFullFileUrl(msg.fileUrl)" alt="Image" class="img-fluid rounded mb-2" style="max-width: 300px;">
       <p *ngIf="msg.content">{{ msg.content }}</p>
     </div>
 

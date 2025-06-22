@@ -7,7 +7,7 @@ export interface IMessage {
   chatId: string;
   chat: string;
   content: string;
-  fileUrl?: File | null;
+  fileUrl?: string | null;
   type: number;
   sentAt: string;
   seen: boolean;
